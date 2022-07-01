@@ -12,13 +12,6 @@
   ],
   "author": "",
   "license": "",
-  "dependencies": {
-    "@types/react-native-sqlite-storage": "^5.0.2",
-    "react": "17.0.2",
-    "react-native": "^0.0.0-0 || 0.60 - 0.69 || 1000.0.0",
-    "react-native-windows": "*",
-    "react-native-sqlite-2": "^3.5.2"
-  },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": "*",
     "crypto-js": "*",
