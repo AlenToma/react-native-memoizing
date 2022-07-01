@@ -11,7 +11,7 @@ export default class Storage implements IStorage {
                 txn.executeSql(
                     'CREATE TABLE IF NOT EXISTS RNMemoizing(id INTEGER PRIMARY KEY AUTOINCREMENT, file text not null, data text NOT NULL, date text NOT NULL, daysToSave number not null)',
                     [],
-                    resolve(txn)
+                    async ()=>  await resolve(txn)
                 )
             });
         })
