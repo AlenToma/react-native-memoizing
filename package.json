@@ -1,0 +1,37 @@
+{
+  "name": "react-native-memoizing",
+  "version": "1.0.0",
+  "description": "The idea of this library is to make sure your data gets memorized and reused, instead of make a long calls to your server each times. This Help speed up the data retrivnings operations. The cash mekanism is totally configrurable, so you could specify how long the data should be cashed untill it refreshed.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "windows": "react-native run-windows"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@types/react-native-sqlite-storage": "^5.0.2",
+    "react": "17.0.2",
+    "react-native": "^0.0.0-0 || 0.60 - 0.69 || 1000.0.0",
+    "react-native-windows": "*",
+    "react-native-sqlite-2": "^3.5.2"
+  },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": "*",
+    "crypto-js": "*",
+    "js-base64": "*",
+    "react-native": "^0.0.0-0 || 0.60 - 0.69 || 1000.0.0",
+    "react-native-sqlite-2": "*",
+    "react-native-windows": "*"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "@types/react": "^18.0.14",
+    "metro-config": "^0.70.3",
+    "react-native-windows": "0.67.0",
+    "typescript": "^4.3.5"
+  }
+}
