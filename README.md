@@ -39,7 +39,7 @@ This library is not on npmjs yet as its not finished yet, So use it on your own 
  const data1= rep.fetchData();
  const data1= rep.fetchData();
  
- const data2= rep.fetchData("test");
+ const data2= await rep.fetchData("test");
  ```
  
  ## useMomorize
