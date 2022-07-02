@@ -1,4 +1,6 @@
 # react-native-memoizing
+`react-native-memoizing` support all `react-native-sqlite-2` support, eg React Native for Android, iOS, Windows and macOS
+
 The idea of this library is to make sure your data gets memorized and reused, instead of making a long calls to your server each times. This Help speed up the data retrivnings operations. The cash mekanism is totally configrurable, so you could specify how long the data should be cashed untill it refreshed.
 
 This library is not on npmjs yet as its not finished yet, So use it on your own risk.
