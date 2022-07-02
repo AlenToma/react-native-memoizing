@@ -8,7 +8,7 @@ export default class Storage implements IStorage {
     init: boolean = false;
     async validateTable() {
         if (!this.init) {
-            await this.clean();
+           // await this.clean();
             this.init = true;
         }
         return new Promise<void>((resolve, reject) => {
