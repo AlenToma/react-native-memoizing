@@ -1,20 +1,53 @@
 import { DataCache, IStorage } from "../types";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { encrypt, decode } from '../useFull'
+import { encrypt, decode, sleep } from '../useFull'
 
 const SQLite = require("react-native-sqlite-2").default;
-const db = SQLite.openDatabase('RNMemoizing.db', '1.0', '', 1)
+
+var db = SQLite.openDatabase('RNMemoizing.db', '1.0', '', 1);
 export default class Storage implements IStorage {
-    validateTable() {
-        return new Promise<void>((resolve) => {
-            db.transaction(function (txn: any) {
-                txn.executeSql(
-                    'CREATE TABLE IF NOT EXISTS RNMemoizing(id INTEGER PRIMARY KEY AUTOINCREMENT, file text not null, data text NOT NULL, date text NOT NULL, daysToSave number not null)',
-                    [],
-                    () => resolve()
-                )
-            });
+    init: boolean = false;
+    async validateTable() {
+        if (!this.init) {
+            await this.clean();
+            this.init = true;
+        }
+        return new Promise<void>((resolve, reject) => {
+            try {
+                db.transaction(function (txn: any) {
+                    console.log("tsCreated");
+                    txn.executeSql(
+                        'CREATE TABLE IF NOT EXISTS RNMemoizing (id INTEGER PRIMARY KEY AUTOINCREMENT, file text not null, data text NOT NULL, date text NOT NULL, daysToSave number not null)',
+                        [],
+                        resolve,
+                        (e: any) => {
+                            console.error("FileCacheMemo-validateTable", e);
+                            reject(e);
+                        });
+                });
+            } catch (e) {
+                console.error(e);
+            }
         })
+    }
+
+
+    async clean() {
+        return new Promise<void>(async (resolve, reject) => {
+            try {
+                db.transaction(function (txn: any) {
+                    txn.executeSql("DELETE FROM RNMemoizing", [], (ts: any, results: any) => {
+                        resolve();
+                    }, (e: any) => {
+                        console.error("FileCacheMemo-clean", e);
+                        reject(e);
+                    });
+                    return null;
+                });
+            } catch (e) {
+                console.error("FileCacheMemo-clean", e);
+                return null;
+            }
+        });
     }
 
 
@@ -26,8 +59,11 @@ export default class Storage implements IStorage {
                     let jsonData = JSON.stringify(value);
                     if (encryptionKey !== undefined)
                         jsonData = encrypt(encryptionKey, jsonData);
-                    txn.executeSql('INSERT INTO RNMemoizing (file, data, date, daysToSave) VALUES (?,?,?)', [file, value.data, value.date, value.date.toISOString(), 1], () => {
+                    txn.executeSql('INSERT INTO RNMemoizing (file, data, date, daysToSave) VALUES (?,?,?,?)', [file, jsonData, value.date.toISOString(), 1], () => {
                         resolve();
+                    }, (e: any) => {
+                        console.error("FileCacheMemo-set", e);
+                        reject(e);
                     });
                 });
                 //  await AsyncStorage.setItem(file, jsonData);
@@ -44,16 +80,27 @@ export default class Storage implements IStorage {
                 await this.validateTable();
                 db.transaction(function (txn: any) {
                     txn.executeSql("select * from RNMemoizing where file=?", [file], (ts: any, results: any) => {
-                        const len = results.rows.length;
-                        let item = undefined as any;
-                        for (let i = 0; i < len; i++) {
-                            item = results.rows.item(i);
-                            break;
+                        try {
+                            const len = results.rows.length;
+                            let item = undefined as any;
+                            for (let i = 0; i < len; i++) {
+                                item = results.rows.item(i);
+                                break;
+                            }
+
+                            if (encryptionKey !== undefined)
+                                item = decode(encryptionKey, item.data);
+                            item = JSON.parse(item);
+
+                            resolve(item);
+                        } catch (e) {
+                            console.error("FileCacheMemo-get", e);
+                            reject(e);
                         }
-                        if (encryptionKey !== undefined)
-                            item = decode(encryptionKey, item);
-                        resolve(item);
-                    }, reject);
+                    }, (e: any) => {
+                        console.error("FileCacheMemo-get", e);
+                        reject(e);
+                    });
                 });
             } catch (e) {
                 console.error("FileCacheMemo-get", e, file);
@@ -76,7 +123,10 @@ export default class Storage implements IStorage {
                         }
 
                         resolve(item != null && item != undefined);
-                    }, reject);
+                    }, (e: any) => {
+                        console.error("FileCacheMemo-has", e);
+                        reject(e);
+                    });
                 });
             } catch (e) {
                 console.error("FileCacheMemo-has", e, file);
@@ -92,7 +142,10 @@ export default class Storage implements IStorage {
                 db.transaction(function (txn: any) {
                     txn.executeSql("delete from RNMemoizing where file=?", [files[0]], (ts: any, results: any) => {
                         resolve();
-                    }, reject);
+                    }, (e: any) => {
+                        console.error("FileCacheMemo-delete", e, files);
+                        reject(e);
+                    });
                     return null;
                 });
             } catch (e) {
@@ -107,7 +160,7 @@ export default class Storage implements IStorage {
             try {
                 await this.validateTable();
                 db.transaction(function (txn: any) {
-                    txn.executeSql("select * from RNMemoizing " + (files != undefined && files.length > 0 ? "where file in (" + files?.map(x => "?") + ")" : ""), files != undefined && files.length > 0 ? files : [], (ts: any, results: any) => {
+                    txn.executeSql("select * from RNMemoizing " + (files != undefined && files.length > 0 ? "where file in (" + files.map(x => "?") + ")" : ""), files != undefined && files.length > 0 ? files : [], (ts: any, results: any) => {
                         const len = results.rows.length;
                         let items = [];
                         for (let i = 0; i < len; i++) {
@@ -116,7 +169,10 @@ export default class Storage implements IStorage {
                         }
 
                         resolve(items.map(x => x.file));
-                    }, reject);
+                    }, (e: any) => {
+                        console.error("FileCacheMemo-getFiles", e, files);
+                        reject(e);
+                    });
                 });
             } catch (e) {
                 console.error("FileCacheMemo-getFiles", e, files);

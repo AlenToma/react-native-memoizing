@@ -1,5 +1,4 @@
-import cryptoJs from 'crypto-js';
-import { Base64 } from 'js-base64'
+import crypto from './cl/cryptolike'
 
 const sleep = async (ms: number) => {
     return new Promise<void>((resolve, reject) => {
@@ -23,9 +22,15 @@ const days_between = function (date: Date) {
 
 const encrypt = (key: string, str: string) => {
     str = str.trim();
-    if (!str.startsWith("¤¤")) { // already encrypted
-        const d = cryptoJs.AES.encrypt(str, key).toString();
-        return "¤¤" + Base64.btoa(d);
+    try {
+        if (!str.startsWith("¤¤")) { // already encrypted
+            //const d = cryptoJs.AES.encrypt(str, key).toString();
+            const d= crypto.encode(key, str);
+            console.log("encrypt", d)
+            return "¤¤" + d;
+        }
+    } catch (e) {
+        console.error(e);
     }
     return str;
 
@@ -33,15 +38,19 @@ const encrypt = (key: string, str: string) => {
 
 const decode = (key: string, str: string) => {
     str = str.trim();
-    if (str.startsWith("¤¤")) {
-        str = str.substring(2);
-        str = Base64.atob(str);
-
-        const bytes = cryptoJs.AES.decrypt(str, key);
-        const originalText = bytes.toString(cryptoJs.enc.Utf8);
-        return originalText as string;
+    try {
+        console.log("decode")
+        if (str.startsWith("¤¤")) {
+            str = str.substring(2);
+            const originalText= crypto.decode(key, str);
+            console.log("Decoded", originalText)
+           // const bytes = cryptoJs.AES.decrypt(str, key);
+            //const originalText = bytes.toString(cryptoJs.enc.Utf8);
+            return originalText as string;
+        }
+    } catch (e) {
+        console.error(e);
     }
-
     return str;
 }
 
