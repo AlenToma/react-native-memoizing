@@ -10,8 +10,8 @@
   "keywords": [
     "react-native"
   ],
-  "author": "",
-  "license": "",
+  "author": "Alen Toma",
+  "license": "MIT",
   "peerDependencies": {
     "react-native": "*",
     "react-native-sqlite-2": "*"
