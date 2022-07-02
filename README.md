@@ -48,10 +48,10 @@ This library is not on npmjs yet as its not finished yet, So use it on your own 
  This is a hooks that also work like Memorize
  ```ts 
  const app =()=> {
- // now if the key userdata exist it will be retrived else you have to setItems
+ // now if the key userName exist it will be retrived else you have to setItems
  // setting it to undefined will remove the data from the db
  // you could also assign MemorizeOptions here to. 
- const [items, setItems]= useMomorize<any[]>("userdata");
+ const [items, setItems]= useMomorize<string>("userName");
  
  }
  ```
