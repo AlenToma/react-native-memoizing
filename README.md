@@ -13,9 +13,9 @@ This library is not on npmjs yet as its not finished yet, So use it on your own 
 | isDebug  | boolean  | YES  | Setting this to true will make sure not to save the data to the db.|
 | storage  | IStorage | YES | The library uses its own storage, but you could implement IStorage and use your own.|
 | daysToSave  | number  | NO  | This will tell the storage how many days too keep the data before refreshing it. |
-| keyModifier  | Function<string>  | YES  | the library creates a key from the (args and methodname) to method, you could also modify it using this.|
+| keyModifier  | Function<string>  | YES  | The library creates a key from the (args and methodname) to method, you could also modify it using this.|
 | validator  | Function<boolean>  | YES  | Validate and tell the library to save it or not |
-| encryptionKey  | string  | YES  | encryption key if you would like to secure the data |
+| encryptionKey  | string  | YES  | Encryption key if you would like to secure the data |
 
 ## Memorize Attribute Example
  ```ts
