@@ -51,7 +51,7 @@ This library is not on npmjs yet as its not finished yet, So use it on your own 
  // now if the key userName exist it will be retrived else you have to setItems
  // setting it to undefined will remove the data from the db
  // you could also assign MemorizeOptions here to. 
- const [items, setItems]= useMomorize<string>("userName");
+ const [items, setItems]= useMomorize("userName", undefined as string | undefined);
  
  }
  ```
