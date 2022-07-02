@@ -3,7 +3,6 @@ import { DataCache, IStorage } from "./types";
 import Storage from "./cl/Storage";
 import useMomorize from './hooks/Memo'
 
-//export default RNMemoizing;
 const GlobalStorage = new Storage();
 const getStorage = () => GlobalStorage;
 export {
