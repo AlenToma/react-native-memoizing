@@ -16,6 +16,7 @@ const useMomorize = function <T>(key: string, daysToSave: number, defaultValue?:
 
             if (!data && defaultValue) {
                 {
+                    await localStorage.current.delete(key); 
                     await localStorage.current.set(key, { data: defaultValue, date: new Date() } as DataCache);
                     await setItem(defaultValue)
                 }
@@ -29,9 +30,9 @@ const useMomorize = function <T>(key: string, daysToSave: number, defaultValue?:
         if (!init.current)
             return;
         (async () => {
+             await localStorage.current.delete(key); 
             if (item)
                 await localStorage.current.set(key, { data: item, date: new Date() } as DataCache);
-            else await localStorage.current.delete(key);
         })();
     }, [item])
 
